@@ -2,18 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   color: var(--foreground);
   background: var(--background);
@@ -23,5 +11,13 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .primary-input {
+    @apply px-3 py-3 ring-2 ring-gray-300 rounded-full;
+  }
+
+  .primary-button {
+    @apply bg-primary text-white rounded-full py-3 w-64;
   }
 }
