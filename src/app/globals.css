@@ -14,11 +14,11 @@ body {
   }
 
   .primary-input {
-    @apply px-3 py-3 ring-2 ring-gray-300 rounded-full;
+    @apply px-3 py-3 ring-2 ring-gray-300 rounded-full hover:ring-gray-400;
   }
 
   .primary-button {
-    @apply bg-primary text-white rounded-full py-3 w-64;
+    @apply bg-primary text-white rounded-full py-3 w-72;
   }
   .secondary-button {
     @apply bg-white text-primaryD rounded-full py-3 w-64;
@@ -27,5 +27,4 @@ body {
   .secondary-input {
     @apply px-3 py-3 ring-1 bg-primaryD ring-white rounded-full;
   }
-  
 }

@@ -2,13 +2,13 @@ const Login = () => {
   return (
     <form>
       <div className="flex w-full justify-center">
-        <div className="w-3/5">
+        <div className="w-2/5">
           <img src="fuel.png" alt="login" />
         </div>
-        <div className="w-2/5">
+        <div className="w-3/5 px-24 mt-24">
           <h1 className="text-6xl text-primary">¡Bienvenido/a! a FuelTix!</h1>
-          <div className="flex flex-col justify-center">
-            <label htmlFor="email" className="my-3">
+          <div className="flex flex-col justify-center mt-12 px-24">
+            <label htmlFor="email" className="my-3 text-primary font-bold">
               Usuario o correo electrónico
             </label>
             <input
@@ -17,7 +17,10 @@ const Login = () => {
               className="primary-input w-full"
               id="email"
             />
-            <label htmlFor="password" className="my-3">
+            <label
+              htmlFor="password"
+              className="my-3 text-primary font-bold mt-10"
+            >
               Contraseña
             </label>
             <input
@@ -26,7 +29,12 @@ const Login = () => {
               className="primary-input  w-full"
               id="password"
             />
-            <button className="primary-button my-4">Iniciar sesión</button>
+            <button className="primary-button my-4 mt-8 font-bold mx-auto">
+              Iniciar sesión
+            </button>
+            <a href="#" className="text-primaryD mx-auto font-light">
+              Recuperar contraseña
+            </a>
           </div>
         </div>
       </div>
