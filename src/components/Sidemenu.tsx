@@ -1,5 +1,7 @@
 "use client"
 
+import Image from "next/image"
+
 type route = {
     routeName: string,
     icon: string,
@@ -23,9 +25,9 @@ export default function Sidemenu(){
         link: "/ticket/delivery"
     },
     {
-        routeName: "Asignar Ticker",
+        routeName: "Asignar Ticket",
         icon: "assign.svg",
-        link: "/ticket/asignment"
+        link: "/ticket/assignment"
     },
     {
         routeName: "Reportes",
@@ -40,7 +42,7 @@ export default function Sidemenu(){
 
     return <aside className="w-[430px] max-w-[430px] min-h-screen px-20 py-16 bg-[#00075D] flex flex-col justify-between items-center gap-y-5">
 
-        <img src="fueltix-logo.svg" className="w-[140px]" alt="" />
+        <img src="/fueltix-logo.svg" className="w-[140px]" alt="" />
 
         <div className="w-full flex flex-col items-center">
             <div className="w-[9em] h-[9em] rounded-full bg-slate-200">
@@ -52,13 +54,13 @@ export default function Sidemenu(){
 
         <ul className="w-full sidemenu-options">
             {routes.map((route)=> <li key={route.routeName} onClick={()=> window.location.href = route.link}>
-                <img src={route.icon} alt="" />
+                <img src={`/${route.icon}`} alt="" />
                 <h2>{route.routeName}</h2>
             </li>)}
         </ul>
 
         <button className="w-full text-white flex justify-start gap-x-5 hover:border-r-2 hover:border-r-white px-5 py-2 transition-[300ms] text-lg">
-            <img src="logout.svg" alt="" />
+            <img src="/logout.svg" alt="" />
             <h2>Cerrar Sesi&oacute;n</h2>
         </button>
     </aside>

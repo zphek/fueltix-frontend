@@ -1,3 +1,3 @@
-export function Delivery(){
+export default function Delivery(){
     return <></>
 }

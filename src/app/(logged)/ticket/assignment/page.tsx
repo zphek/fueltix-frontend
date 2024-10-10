@@ -1,3 +1,3 @@
-export function Assignment(){
+export default function Assignment(){
     return <></>
 }

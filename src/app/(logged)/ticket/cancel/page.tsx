@@ -1,3 +1,3 @@
-export function Cancel(){
+export default function Cancel(){
     return <></>
 }
