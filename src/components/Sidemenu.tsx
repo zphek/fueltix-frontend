@@ -1,7 +1,5 @@
 "use client"
 
-import Image from "next/image"
-
 type route = {
     routeName: string,
     icon: string,
@@ -40,7 +38,7 @@ export default function Sidemenu(){
         link: "/ticket/cancel"
     }]
 
-    return <aside className="w-[430px] max-w-[430px] min-h-screen px-20 py-16 bg-[#00075D] flex flex-col justify-between items-center gap-y-5">
+    return <aside className="min-w-[430px] min-h-screen px-20 py-16 bg-[#00075D] flex flex-col justify-between items-center gap-y-5">
 
         <img src="/fueltix-logo.svg" className="w-[140px]" alt="" />
 
@@ -48,7 +46,7 @@ export default function Sidemenu(){
             <div className="w-[9em] h-[9em] rounded-full bg-slate-200">
 
             </div>
-            <h2 className="text-white font-extrabold text-2xl">Bernardo B&aacute;ez</h2>
+            <h2 className="text-white font-extrabold text-2xl mt-5">Bernardo B&aacute;ez</h2>
             <h4 className="text-xl font-semibold text-[#0EB0EE]">Administrador</h4>
         </div>
 

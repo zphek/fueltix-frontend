@@ -31,4 +31,8 @@ body {
   .sidemenu-options > li{
     @apply w-full text-white py-2 flex cursor-pointer gap-x-5 px-5 py-4 font-normal text-lg hover:border-r-2 hover:border-r-white transition-[100ms]
   }
+
+  .ticketCard {
+    box-shadow: 0px 6px 25px 0px #00000024
+  }
 }

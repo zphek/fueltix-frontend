@@ -32,8 +32,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Sidemenu/>
-        {children}
+        <section className={`${geistSans.variable} ${geistMono.variable} antialiased flex`}>
+          <Sidemenu/>
+          {children}
+        </section>
       </body>
     </html>
   );
