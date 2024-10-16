@@ -2,7 +2,7 @@ import TicketCard from "@/components/TicketCard";
 
 export default function Register(){
     return <main className="p-10 px-20 min-h-screen w-screen">
-        <h1 className="text-5xl font-normal text-[#070085] h-16">Register Ticket</h1>
+        <h1 className="text-5xl font-normal text-[#070085] h-16">Registrar Ticket</h1>
         <div className="flex flex-grow w-full justify-start  mt-5">
             <div className="grow flex flex-col gap-y-6 max-w-[600px]">
                 <div className="flex flex-col">

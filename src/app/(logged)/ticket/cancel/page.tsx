@@ -19,7 +19,7 @@ export default function Cancel(){
     
       return (
         <main className="p-10 px-20 min-h-screen min-w-screen">
-          <h1 className="text-5xl font-normal text-[#070085] mb-8">Cancel Ticket</h1>
+          <h1 className="text-5xl font-normal text-[#070085] mb-8">Cancelar Ticket</h1>
 
           <form className="flex items-center mb-5 gap-x-4">
             <div className="flex flex-col gap-y-2">
@@ -27,12 +27,12 @@ export default function Cancel(){
                 <input type="text" name="" id="" className="px-4 py-2 w-[200px] border-2 border-[#00075D] rounded-full" />
             </div>
 
-            <div>
-                <h2>EmployeeID</h2>
-                <input type="text" name="" id="" />
+            <div className="flex flex-col gap-y-2">
+                <h2 className="text-[#00075D] font-bold">DeliveryID</h2>
+                <input type="text" name="" id="" className="px-4 py-2 w-[200px] border-2 border-[#00075D] rounded-full" />
             </div>
 
-            <button className="bg-[#00075D] text-white py-2 px-6 rounded-xl">
+            <button className="bg-[#00075D] text-white py-2 px-6 rounded-xl ml-5">
                 Buscar
             </button>
           </form>

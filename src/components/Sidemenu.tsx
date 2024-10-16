@@ -1,65 +1,94 @@
 "use client"
 
-type route = {
-    routeName: string,
-    icon: string,
-    link: string
+import { useState } from 'react'
+import { Menu, X } from 'lucide-react'
+
+type Route = {
+  routeName: string,
+  icon: string,
+  link: string
 }
 
-export default function Sidemenu(){
-    const routes:route[] = [{
-        routeName: "Dashboard",
-        icon: "dashboard.svg",
-        link: "/dashboard"
-    },
-    {
-        routeName: "Registrar Ticket",
-        icon: "addpeople.svg",
-        link: "/ticket/register"
-    }, 
-    {
-        routeName: "Entregar Ticket",
-        icon: "delivery.svg",
-        link: "/ticket/delivery"
-    },
-    {
-        routeName: "Asignar Ticket",
-        icon: "assign.svg",
-        link: "/ticket/assignment"
-    },
-    {
-        routeName: "Reportes",
-        icon: "reports.svg",
-        link: "/reports"
-    },
-    {
-        routeName: "Cancelar Ticket",
-        icon: "cancel.svg",
-        link: "/ticket/cancel"
-    }]
+export default function Sidemenu() {
+  const [isOpen, setIsOpen] = useState(false)
 
-    return <aside className="min-w-[430px] min-h-screen px-20 py-16 bg-[#00075D] flex flex-col justify-between items-center gap-y-5">
+  const routes: Route[] = [
+    {
+      routeName: "Dashboard",
+      icon: "dashboard.svg",
+      link: "/dashboard"
+    },
+    {
+      routeName: "Registrar Ticket",
+      icon: "addpeople.svg",
+      link: "/ticket/register"
+    },
+    {
+      routeName: "Entregar Ticket",
+      icon: "delivery.svg",
+      link: "/ticket/delivery"
+    },
+    {
+      routeName: "Asignar Ticket",
+      icon: "assign.svg",
+      link: "/ticket/assignment"
+    },
+    {
+      routeName: "Reportes",
+      icon: "reports.svg",
+      link: "/reports"
+    },
+    {
+      routeName: "Cancelar Ticket",
+      icon: "cancel.svg",
+      link: "/ticket/cancel"
+    }
+  ]
 
-        <img src="/fueltix-logo.svg" className="w-[140px]" alt="" />
+  return (
+    <>
+      <button 
+        onClick={() => setIsOpen(!isOpen)} 
+        className="fixed top-4 left-4 z-40 lg:hidden"
+      >
+        {isOpen ? <X className='text-white' size={24} /> : <Menu size={24} />}
+      </button>
 
+      <aside className={`
+        fixed lg:static top-0 left-0 z-30
+        lg:min-w-[24rem] max-w-[24rem] md:w-[430px] min-h-screen 
+        px-6 md:px-20 py-16 
+        bg-[#00075D] 
+        flex flex-col justify-between items-center gap-y-5
+        transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
+        <img src="/fueltix-logo.svg" className="w-[140px]" alt="Fueltix Logo" />
+        
         <div className="w-full flex flex-col items-center">
-            <div className="w-[9em] h-[9em] rounded-full bg-slate-200">
-
-            </div>
-            <h2 className="text-white font-extrabold text-2xl mt-5">Bernardo B&aacute;ez</h2>
-            <h4 className="text-xl font-semibold text-[#0EB0EE]">Administrador</h4>
+          <div className="w-24 h-24 md:w-36 md:h-36 rounded-full bg-slate-200"></div>
+          <h2 className="text-white font-extrabold text-xl md:text-2xl mt-5">Bernardo Báez</h2>
+          <h4 className="text-lg md:text-xl font-semibold text-[#0EB0EE]">Administrador</h4>
         </div>
-
+        
         <ul className="w-full sidemenu-options">
-            {routes.map((route)=> <li key={route.routeName} onClick={()=> window.location.href = route.link}>
-                <img src={`/${route.icon}`} alt="" />
-                <h2>{route.routeName}</h2>
-            </li>)}
+          {routes.map((route) => (
+            <li 
+              key={route.routeName} 
+              onClick={() => window.location.href = route.link}
+              className="flex items-center gap-x-3 text-white hover:bg-blue-700 px-4 py-2 rounded transition-colors duration-200"
+            >
+              <img src={`/${route.icon}`} alt="" className="w-6 h-6" />
+              <h2 className="text-sm md:text-base">{route.routeName}</h2>
+            </li>
+          ))}
         </ul>
-
-        <button className="w-full text-white flex justify-start gap-x-5 hover:border-r-2 hover:border-r-white px-5 py-2 transition-[300ms] text-lg">
-            <img src="/logout.svg" alt="" />
-            <h2>Cerrar Sesi&oacute;n</h2>
+        
+        <button className="w-full text-white flex justify-start items-center gap-x-3 hover:bg-blue-700 px-4 py-2 rounded transition-colors duration-200 text-sm md:text-base">
+          <img src="/logout.svg" alt="" className="w-6 h-6" />
+          <h2>Cerrar Sesión</h2>
         </button>
-    </aside>
+      </aside>
+    </>
+  )
 }
