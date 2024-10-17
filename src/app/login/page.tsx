@@ -41,7 +41,6 @@ const Login = () => {
       router.replace("/dashboard");
       setUser(user);
       setShowSuccess(true);
-      window.location.href="/dashboard"
     } catch (error) {
       console.error(error);
       setError("Error al iniciar sesión. Por favor, intente nuevamente.");
