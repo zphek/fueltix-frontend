@@ -4,7 +4,6 @@ import type { NextRequest } from 'next/server'
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
   if(request.cookies.has("access-token")){
-    console.log("Ta coronao.")
   }
 
   if (request.nextUrl.pathname.startsWith('/ticket') && request.cookies.has("access-token")) {

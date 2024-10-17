@@ -1,6 +1,8 @@
 "use client";
 
+import { User, useUserStore } from "@/store/user";
 import sendRequest from "@/utilities/sendRequest";
+import { useRouter } from "next/navigation";
 import { useState, FormEvent, ChangeEvent } from "react";
 
 type Form = {
@@ -15,6 +17,8 @@ const Login = () => {
   });
   const [showSuccess, setShowSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const setUser = useUserStore((state) => state.setUser);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -30,9 +34,13 @@ const Login = () => {
     setError(null);
 
     try {
-      await sendRequest("/auth/login", "POST", formData);
+      const response = await sendRequest("/auth/login", "POST", formData);
+      // SAFETY:
+      // We can safely assume that `data` contains a `User` object
+      const user: User = response.data;
+      router.replace("/dashboard");
+      setUser(user);
       setShowSuccess(true);
-      window.location.href="/dashboard"
     } catch (error) {
       console.error(error);
       setError("Error al iniciar sesión. Por favor, intente nuevamente.");
@@ -55,11 +63,23 @@ const Login = () => {
           >
             {error && (
               <div
-                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3"
+                className="bg-red-100 Yes no OKborder border-red-400 text-red-700 px-4 py-3"
                 role="alert"
               >
                 <strong className="font-bold">Error: </strong>
                 <span className="block sm:inline">{error}</span>
+              </div>
+            )}
+
+            {showSuccess && (
+              <div
+                className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+                role="alert"
+              >
+                <strong className="font-bold">¡Éxito! </strong>
+                <span className="block sm:inline">
+                  Has iniciado sesión exitosamente.
+                </span>
               </div>
             )}
             <label htmlFor="email" className="my-3 text-primary font-bold">
@@ -103,17 +123,6 @@ const Login = () => {
           </form>
         </div>
       </div>
-      {showSuccess && (
-        <div
-          className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
-          role="alert"
-        >
-          <strong className="font-bold">¡Éxito! </strong>
-          <span className="block sm:inline">
-            Has iniciado sesión exitosamente.
-          </span>
-        </div>
-      )}
     </div>
   );
 };
