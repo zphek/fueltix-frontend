@@ -50,7 +50,10 @@ const Login = () => {
   return (
     <div>
       <div className="flex w-full max-h-screen justify-center">
-        <div className="w-2/4 max-h-screen">
+        <div
+          className="w-2/4 max-h-screen
+        "
+        >
           <img src="fuel.png" alt="login" />
         </div>
         <div className="w-3/5 px-24 mt-24 flex flex-col justify-center">
