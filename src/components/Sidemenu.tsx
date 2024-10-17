@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import sendRequest from "@/utilities/sendRequest";
 import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/user";
 
 type Route = {
   routeName: string;
@@ -48,6 +49,11 @@ export default function Sidemenu() {
   ];
 
   const router = useRouter();
+  const user = useUserStore((state) => state.user);
+
+  if (!user) {
+    return null;
+  }
   return (
     <>
       <button
@@ -71,12 +77,14 @@ export default function Sidemenu() {
         <img src="/fueltix-logo.svg" className="w-[140px]" alt="Fueltix Logo" />
 
         <div className="w-full flex flex-col items-center">
-          <div className="w-24 h-24 md:w-36 md:h-36 rounded-full bg-slate-200"></div>
+          {/* <div className="w-24 h-24 md:w-36 md:h-36 rounded-full bg-slate-200"></div> */}
+
+          <img src="https://aui.atlassian.com/aui/8.8/docs/images/avatar-person.svg" alt="" className="w-24 h-24 md:w-36 md:h-36 rounded-full" />
           <h2 className="text-white font-extrabold text-xl md:text-2xl mt-5">
-            Bernardo Báez
+            {user?.username}
           </h2>
           <h4 className="text-lg md:text-xl font-semibold text-[#0EB0EE]">
-            Administrador
+            {user?.role}
           </h4>
         </div>
 
