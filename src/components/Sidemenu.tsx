@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import sendRequest from "@/utilities/sendRequest";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 type Route = {
   routeName: string;
@@ -47,6 +47,7 @@ export default function Sidemenu() {
     },
   ];
 
+  const router = useRouter();
   return (
     <>
       <button
@@ -83,7 +84,9 @@ export default function Sidemenu() {
           {routes.map((route) => (
             <li
               key={route.routeName}
-              onClick={() => (window.location.href = route.link)}
+              onClick={() => {
+                router.push(route.link);
+              }}
               className="flex items-center gap-x-3 text-white hover:bg-blue-700 px-4 py-2 rounded transition-colors duration-200"
             >
               <img src={`/${route.icon}`} alt="" className="w-6 h-6" />
