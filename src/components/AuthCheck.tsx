@@ -12,7 +12,6 @@ const verifyToken = async (
   onError: (error: any) => void
 ) => {
   try {
-    console.log("verifying token");
     const response = await sendRequest("/auth/verify", "GET", {});
     // SAFETY:
     // We can safely assume that `data` contains a `User` object
