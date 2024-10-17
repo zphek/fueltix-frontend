@@ -1,5 +1,6 @@
 "use client"
 
+import Denomination from "@/components/Denomination";
 import Dropdown from "@/components/Dropdown";
 import TicketCard from "@/components/TicketCard";
 import sendRequest from "@/utilities/sendRequest";
@@ -107,16 +108,7 @@ export default function Assigment() {
             />
           </div>
           
-          <Dropdown options={[200, 500, 1000, 2000]} title="Denominación" setCurrent={setDenomination} />
-          <div className="flex flex-col">
-            <h2 className="text-[#00075D] text-xl font-bold">Ticket secuencial</h2>
-            <input 
-              type="text" 
-              value={sequential}
-              onChange={(e) => setSequential(e.target.value)}
-              className="w-full outline-none rounded-full py-2 px-4 border-2 border-[#00075D]"
-            />
-          </div>
+          <Dropdown options={[1,2,3,4,5,6,7,8,9,10,11,12]} title="Mes" setCurrent={setDenomination} />
           <div className="text-white w-full flex justify-center gap-x-5">
             <button type="submit" className="py-2 px-6 rounded-full bg-[#00075D]">
               Guardar
@@ -133,10 +125,8 @@ export default function Assigment() {
           </div>
         </div>
         <div className="px-20 flex flex-col items-center">
-          <h3 className="w-28 h-28 rounded-full border-2 border-[#070085] text-[#070085] text-5xl flex justify-center items-center">
-            {tickets.length}
-          </h3>
-          <h2 className="text-xl text-[#00075D] font-semibold">Tickets</h2>
+          <Denomination/>
+
           <button 
             className="py-2 px-6 rounded-full bg-[#00075D] text-white mt-10"
             onClick={registerTickets}
