@@ -45,8 +45,22 @@ const Login = () => {
           <img src="fuel.png" alt="login" />
         </div>
         <div className="w-3/5 px-24 mt-24 flex flex-col justify-center">
-          <h1 className="text-6xl text-primary text-center">¡Bienvenido/a a FuelTix!</h1>
-          <form className="flex flex-col justify-center mt-12 px-24" onSubmit={handleSubmit}>
+          <h1 className="text-6xl text-primary text-center">
+            ¡Bienvenido/a a FuelTix!
+          </h1>
+          <form
+            className="flex flex-col justify-center mt-12 px-24"
+            onSubmit={handleSubmit}
+          >
+            {error && (
+              <div
+                className="bg-red-100 border border-red-400 text-red-700 px-4 py-3"
+                role="alert"
+              >
+                <strong className="font-bold">Error: </strong>
+                <span className="block sm:inline">{error}</span>
+              </div>
+            )}
             <label htmlFor="email" className="my-3 text-primary font-bold">
               Usuario o correo electrónico
             </label>
@@ -76,7 +90,10 @@ const Login = () => {
               onChange={handleChange}
               required
             />
-            <button type="submit" className="primary-button my-4 mt-8 font-bold mx-auto">
+            <button
+              type="submit"
+              className="primary-button my-4 mt-8 font-bold mx-auto"
+            >
               Iniciar sesión
             </button>
             <a href="/retrieve" className="text-primaryD mx-auto font-light">
@@ -86,15 +103,14 @@ const Login = () => {
         </div>
       </div>
       {showSuccess && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+        <div
+          className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative"
+          role="alert"
+        >
           <strong className="font-bold">¡Éxito! </strong>
-          <span className="block sm:inline">Has iniciado sesión exitosamente.</span>
-        </div>
-      )}
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-          <strong className="font-bold">Error: </strong>
-          <span className="block sm:inline">{error}</span>
+          <span className="block sm:inline">
+            Has iniciado sesión exitosamente.
+          </span>
         </div>
       )}
     </div>
