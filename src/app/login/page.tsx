@@ -1,33 +1,42 @@
 "use client";
 
 import sendRequest from "@/utilities/sendRequest";
-import { Alert } from "@mui/material";
-import { CheckIcon } from "lucide-react";
-import { useState } from "react";
+import { useState, FormEvent, ChangeEvent } from "react";
 
-type form = {
-  email: string,
-  password: string
-}
+type Form = {
+  email: string;
+  password: string;
+};
 
 const Login = () => {
-  const [formData, setFormData] = useState<form>()
+  const [formData, setFormData] = useState<Form>({
+    email: "",
+    password: "",
+  });
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e:html)=>{
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
-  }
-
-  const handleSubmit = (e:any)=>{
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setShowSuccess(false);
+    setError(null);
 
-    sendRequest("/auth/login", "POST", formData)
-    .then((response)=>{
-      console.log(response)
-    })
-    .catch((error)=>{
-      console.log(error)
-    })
-  } 
+    try {
+      await sendRequest("/auth/login", "POST", formData);
+      setShowSuccess(true);
+    } catch (error) {
+      console.error(error);
+      setError("Error al iniciar sesión. Por favor, intente nuevamente.");
+    }
+  };
 
   return (
     <div>
@@ -36,16 +45,20 @@ const Login = () => {
           <img src="fuel.png" alt="login" />
         </div>
         <div className="w-3/5 px-24 mt-24 flex flex-col justify-center">
-          <h1 className="text-6xl text-primary text-center">¡Bienvenido/a! a FuelTix!</h1>
-          <form className="flex flex-col justify-center mt-12 px-24">
+          <h1 className="text-6xl text-primary text-center">¡Bienvenido/a a FuelTix!</h1>
+          <form className="flex flex-col justify-center mt-12 px-24" onSubmit={handleSubmit}>
             <label htmlFor="email" className="my-3 text-primary font-bold">
               Usuario o correo electrónico
             </label>
             <input
               type="text"
+              name="email"
               placeholder="Ingrese su usuario o correo electrónico"
               className="primary-input w-full"
               id="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
             />
             <label
               htmlFor="password"
@@ -55,11 +68,15 @@ const Login = () => {
             </label>
             <input
               type="password"
+              name="password"
               placeholder="Ingrese su contraseña"
-              className="primary-input  w-full"
+              className="primary-input w-full"
               id="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
             />
-            <button className="primary-button my-4 mt-8 font-bold mx-auto">
+            <button type="submit" className="primary-button my-4 mt-8 font-bold mx-auto">
               Iniciar sesión
             </button>
             <a href="/retrieve" className="text-primaryD mx-auto font-light">
@@ -68,11 +85,20 @@ const Login = () => {
           </form>
         </div>
       </div>
-
-      <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
-        Has iniciado sesi&oacute;n exitosamente!
-      </Alert>
+      {showSuccess && (
+        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+          <strong className="font-bold">¡Éxito! </strong>
+          <span className="block sm:inline">Has iniciado sesión exitosamente.</span>
+        </div>
+      )}
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <strong className="font-bold">Error: </strong>
+          <span className="block sm:inline">{error}</span>
+        </div>
+      )}
     </div>
   );
 };
+
 export default Login;

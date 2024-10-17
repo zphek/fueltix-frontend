@@ -6,6 +6,11 @@ export default async function sendRequest(endpoint: string, method: string, data
         baseURL: "http://localhost:8080/api/v1",
         url: endpoint,
         method,
-        data
+        withCredentials: true,
+        data,
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
     })
 }
