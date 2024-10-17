@@ -1,7 +1,9 @@
+"use client";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "../globals.css";
 import Sidemenu from "@/components/Sidemenu";
+import AuthCheck from "@/components/AuthCheck";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -13,11 +15,6 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
-
-export const metadata: Metadata = {
-  title: "Fueltix",
-  description: "A fuel ticket management system",
-};
 
 export default function RootLayout({
   children,
@@ -32,10 +29,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <section className={`${geistSans.variable} ${geistMono.variable} antialiased flex`}>
-          <Sidemenu/>
-          {children}
-        </section>
+        <AuthCheck>
+          <section
+            className={`${geistSans.variable} ${geistMono.variable} antialiased flex`}
+          >
+            <Sidemenu />
+            {children}
+          </section>
+        </AuthCheck>
       </body>
     </html>
   );
