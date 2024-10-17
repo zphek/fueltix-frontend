@@ -97,16 +97,17 @@ export default function Assigment() {
       )}
       <form onSubmit={handleSubmit} className="flex flex-grow w-full justify-start mt-5">
         <div className="grow flex flex-col gap-y-6 max-w-[600px]">
-          {/* <Dropdown options={[200, 500, 1000, 2000]} title="Denominación" setCurrent={setDenomination} /> */}
           <div className="flex flex-col">
-            <h2 className="text-[#00075D] text-xl font-bold">A&ntilde;o Asignaminto</h2>
+            <h2 className="text-[#00075D] text-xl font-bold">A&ntilde;o Asignamiento</h2>
             <input 
-              type="date" 
+              type="number" 
               value={expirationDate}
               onChange={(e) => setExpirationDate(e.target.value)}
               className="w-full outline-none rounded-full py-2 px-4 border-2 border-[#00075D]"
             />
           </div>
+          
+          <Dropdown options={[200, 500, 1000, 2000]} title="Denominación" setCurrent={setDenomination} />
           <div className="flex flex-col">
             <h2 className="text-[#00075D] text-xl font-bold">Ticket secuencial</h2>
             <input 
