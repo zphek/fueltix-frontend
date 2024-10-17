@@ -12,7 +12,7 @@ export default function Delivery() {
   useEffect(()=>{
     sendRequest("https://api.digital.gob.do/v1/territories/provinces", "GET", {})
     .then(({data})=>{
-      setProvincias(data);
+      console.log(data);
     })
   }, [])
 
