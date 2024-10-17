@@ -1,11 +1,20 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Dropdown from "@/components/Dropdown";
 import DeliveryTicketCard from '@/components/DeliveryTicketCard';
+import sendRequest from '@/utilities/sendRequest';
 
 export default function Delivery() {
   const [totalAmount, setTotalAmount] = useState(0);
+  const [provincias, setProvincias] = useState("");
+
+  useEffect(()=>{
+    sendRequest("https://api.digital.gob.do/v1/territories/provinces", "GET", {})
+    .then(({data})=>{
+      setProvincias(data);
+    })
+  }, [])
 
   const handleDenominationChange = (e, value) => {
     const inputValue = parseInt(e.target.value) || 0;
