@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Menu, X } from 'lucide-react'
+import sendRequest from '@/utilities/sendRequest'
 
 type Route = {
   routeName: string,
@@ -84,7 +85,10 @@ export default function Sidemenu() {
           ))}
         </ul>
         
-        <button className="w-full text-white flex justify-start items-center gap-x-3 hover:bg-blue-700 px-4 py-2 rounded transition-colors duration-200 text-sm md:text-base">
+        <button className="w-full text-white flex justify-start items-center gap-x-3 hover:bg-blue-700 px-4 py-2 rounded transition-colors duration-200 text-sm md:text-base"
+        onClick={()=>{
+          sendRequest("/auth/logout", "GET", null);
+        }}>
           <img src="/logout.svg" alt="" className="w-6 h-6" />
           <h2>Cerrar Sesión</h2>
         </button>
