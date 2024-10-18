@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import sendRequest from '@/utilities/sendRequest';
+import { useState } from "react";
+import sendRequest from "@/utilities/sendRequest";
 
 type TicketCardProps = {
   ticket: Ticket;
@@ -8,17 +8,24 @@ type TicketCardProps = {
 };
 
 type Ticket = {
-    fuelTicketId: string;
-    expirationDate: string;
-    amount: number;
-    sequential: string;
-    barcode_svg: string;
-  };
-  
+  fuelTicketId: string;
+  expirationDate: string;
+  amount: number;
+  sequential: string;
+  barcode_svg: string;
+};
 
-export default function AssignmentTicket({ ticket, index, setTickets }: TicketCardProps) {
+export default function AssignmentTicket({
+  ticket,
+  index,
+  setTickets,
+}: TicketCardProps) {
   const [showBarcode, setShowBarcode] = useState(false);
-  const [requestState, setRequestState] = useState({ error: false, success: false, message: "" });
+  const [requestState, setRequestState] = useState({
+    error: false,
+    success: false,
+    message: "",
+  });
 
   function handleBarCode() {
     setShowBarcode(!showBarcode);
@@ -30,7 +37,7 @@ export default function AssignmentTicket({ ticket, index, setTickets }: TicketCa
         setRequestState({
           error: false,
           success: true,
-          message: "Se ha eliminado con éxito."
+          message: "Se ha eliminado con éxito.",
         });
         setTickets((prevTickets) => prevTickets.filter((_, i) => i !== index));
       })
@@ -39,7 +46,7 @@ export default function AssignmentTicket({ ticket, index, setTickets }: TicketCa
         setRequestState({
           error: true,
           success: false,
-          message: "No se ha logrado eliminar."
+          message: "No se ha logrado eliminar.",
         });
       });
   }
@@ -49,9 +56,9 @@ export default function AssignmentTicket({ ticket, index, setTickets }: TicketCa
       <div className="min-h-[60px] py-4 px-6 flex w-full justify-between relative rounded-xl overflow-hidden shadow-[0px_6px_25px_0px_#00000024] items-center">
         <div className="absolute h-full w-4 bg-[#00075D] top-0 -left-2"></div>
         <div className="pr-4">
-          <input type="checkbox" name="" id="" className='scale-[160%]'/>
+          <input type="checkbox" name="" id="" className="scale-[160%]" />
         </div>
-        
+
         <div className="pr-4">
           <h2 className="text-[#00075D] font-bold">Matr&iacute;cula (ID)</h2>
           <h4>{ticket.expirationDate}</h4>

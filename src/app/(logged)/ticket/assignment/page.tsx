@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import AssignmentTicket from "@/components/AssignmentTicket";
 import Denomination from "@/components/Denomination";
@@ -11,25 +11,27 @@ type TicketForm = {
   amount: string;
   sequential: string;
   expirationDate: string;
-}
+};
 
 type RegisteredTicketForm = {
-    amount: string;
-    sequential: string;
-    expirationDate: string;
-    barcode: string;
-    barcode_svg: string;
-  }
+  amount: string;
+  sequential: string;
+  expirationDate: string;
+  barcode: string;
+  barcode_svg: string;
+};
 
 type RequestResponse = {
   error: boolean;
   success: boolean;
   message: string;
-}
+};
 
 export default function Assigment() {
   const [tickets, setTickets] = useState<TicketForm[]>([]);
-  const [registeredTickets, setRegisteredTickets] = useState<RegisteredTicketForm[]>([]);
+  const [registeredTickets, setRegisteredTickets] = useState<
+    RegisteredTicketForm[]
+  >([]);
   const [denomination, setDenomination] = useState("");
   const [expirationDate, setExpirationDate] = useState("");
   const [sequential, setSequential] = useState("");
@@ -37,13 +39,27 @@ export default function Assigment() {
   const [drivers, setDrivers] = useState();
   const [creation, setCreation] = useState<RequestResponse | null>(null);
 
-  useEffect(()=>{
-    sendRequest("/tickets", "GET", null)
-    .then(({data})=>{
-        setRegisteredTickets((tickets)=> [...tickets, ...data])
-        console.log(data)
-    })
-  }, [])
+  useEffect(() => {
+    sendRequest("/tickets", "GET", null).then(({ data }) => {
+      setRegisteredTickets((tickets) => [...tickets, ...data]);
+      console.log(data);
+    });
+  }, []);
+
+  const monthToNumber = {
+    Enero: 1,
+    Febrero: 2,
+    Marzo: 3,
+    Abril: 4,
+    Mayo: 5,
+    Junio: 6,
+    Julio: 7,
+    Agosto: 8,
+    Septiembre: 9,
+    Octubre: 10,
+    Noviembre: 11,
+    Diciembre: 12,
+  };
 
   const registerTickets = async () => {
     try {
@@ -51,17 +67,19 @@ export default function Assigment() {
       setCreation({
         error: false,
         success: true,
-        message: "Los tickets fueron agregados correctamente!"
+        message: "Los tickets fueron agregados correctamente!",
       });
       setTickets([]); // Clear tickets after successful registration
     } catch (err) {
       setCreation({
         error: true,
         success: false,
-        message: "Hubo un error a la hora de insertar los tickets."
+        message: "Hubo un error a la hora de insertar los tickets.",
       });
     }
-  }
+  };
+
+  const handleSave = async () => {};
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -72,7 +90,7 @@ export default function Assigment() {
     const newTicket: TicketForm = {
       amount: denomination,
       sequential: sequential,
-      expirationDate: expirationDate
+      expirationDate: expirationDate,
     };
     setTickets([...tickets, newTicket]);
     setError("");
@@ -91,32 +109,48 @@ export default function Assigment() {
 
   return (
     <main className="p-10 px-20 min-h-screen max-h-screen overflow-y-scroll w-screen">
-      <h1 className="text-5xl font-normal text-[#070085] h-16">Asignar Ticket</h1>
+      <h1 className="text-5xl font-normal text-[#070085] h-16">
+        Asignar Ticket
+      </h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       {creation && (
-        <p className={`mb-4 ${creation.error ? 'text-red-500' : 'text-green-500'}`}>
+        <p
+          className={`mb-4 ${
+            creation.error ? "text-red-500" : "text-green-500"
+          }`}
+        >
           {creation.message}
         </p>
       )}
-      <form onSubmit={handleSubmit} className="flex flex-col flex-grow w-full justify-start mt-5">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col flex-grow w-full justify-start mt-5"
+      >
         <div className="flex w-full">
           <div className="grow flex flex-col gap-y-6 max-w-[600px]">
             <div className="flex flex-col">
-              <h2 className="text-[#00075D] text-xl font-bold">A&ntilde;o Asignamiento</h2>
-              <input 
-                type="number" 
+              <h2 className="text-[#00075D] text-xl font-bold">
+                A&ntilde;o Asignamiento
+              </h2>
+
+              <input
+                type="number"
                 value={expirationDate}
                 onChange={(e) => setExpirationDate(e.target.value)}
                 className="w-full outline-none rounded-full py-2 px-4 border-2 border-[#00075D]"
               />
             </div>
-            
-            <Dropdown options={[1,2,3,4,5,6,7,8,9,10,11,12]} title="Mes" setCurrent={setDenomination} />
+
+            <Dropdown
+              options={Object.keys(monthToNumber)}
+              title="Mes"
+              setCurrent={setDenomination}
+            />
           </div>
           <div className="px-20 flex flex-col items-center">
-            <Denomination/>
+            <Denomination />
 
-            <button 
+            <button
               className="py-2 px-6 rounded-full bg-[#00075D] text-white mt-10"
               onClick={registerTickets}
               disabled={tickets.length === 0}
@@ -127,53 +161,63 @@ export default function Assigment() {
         </div>
 
         <div className="flex flex-col max-h-[400px] gap-y-5 overflow-y-scroll py-5 px-5 mt-5 w-full">
-        {registeredTickets.map((ticket, index) => (
-          <AssignmentTicket 
-            key={index} 
-            ticket={ticket}
-            svg={ticket.barcode_svg}
-            id={index}
-            setItems={setTickets} 
-          />
-        ))}
+          {registeredTickets.map((ticket, index) => (
+            <AssignmentTicket
+              key={index}
+              ticket={ticket}
+              svg={ticket.barcode_svg}
+              id={index}
+              setItems={setTickets}
+            />
+          ))}
         </div>
 
         <div className="text-white w-full flex justify-center gap-x-5 mt-5">
-              <button type="submit" className="py-2 px-6 rounded-full bg-[#00075D]">
-                Guardar
-              </button>
-              <button type="button" onClick={() => {
-                setDenomination("");
-                setExpirationDate("");
-                setSequential("");
-                setError("");
-                setTickets(()=>[])
-              }} className="py-2 px-6 rounded-full bg-[#00075D]">
-                Cancelar
-              </button>
-            </div>
+          <button
+            type="submit"
+            className="py-2 px-6 rounded-full bg-[#00075D]"
+            onClick={handleSave}
+          >
+            Guardar
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setDenomination("");
+              setExpirationDate("");
+              setSequential("");
+              setError("");
+              setTickets(() => []);
+            }}
+            className="py-2 px-6 rounded-full bg-[#00075D]"
+          >
+            Cancelar
+          </button>
+        </div>
       </form>
-      <h1 className="text-3xl font-bold text-[#070085] h-16 mt-10">Actualizaciones</h1>
+      <h1 className="text-3xl font-bold text-[#070085] h-16 mt-10">
+        Actualizaciones
+      </h1>
       <div className="flex flex-col max-h-[270px] min-w-full overflow-y-scroll gap-y-5">
         {tickets.map((ticket, index) => (
-          <TicketCard 
-            key={index} 
+          <TicketCard
+            key={index}
             ticket={ticket}
             id={index}
-            setItems={setTickets} 
+            setItems={setTickets}
           />
         ))}
 
         {registeredTickets.map((ticket, index) => (
-          <TicketCard 
-            key={index} 
+          <TicketCard
+            key={index}
             ticket={ticket}
             svg={ticket.barcode_svg}
             id={index}
-            setItems={setTickets} 
+            setItems={setTickets}
           />
         ))}
       </div>
     </main>
-  )
+  );
 }
