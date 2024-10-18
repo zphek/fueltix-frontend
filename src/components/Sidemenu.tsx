@@ -77,9 +77,11 @@ export default function Sidemenu() {
         <img src="/fueltix-logo.svg" className="w-[140px]" alt="Fueltix Logo" />
 
         <div className="w-full flex flex-col items-center">
-          {/* <div className="w-24 h-24 md:w-36 md:h-36 rounded-full bg-slate-200"></div> */}
-
-          <img src="https://aui.atlassian.com/aui/8.8/docs/images/avatar-person.svg" alt="" className="w-24 h-24 md:w-36 md:h-36 rounded-full" />
+          <img
+            src="https://aui.atlassian.com/aui/8.8/docs/images/avatar-person.svg"
+            alt=""
+            className="w-24 h-24 md:w-36 md:h-36 rounded-full"
+          />
           <h2 className="text-white font-extrabold text-xl md:text-2xl mt-5">
             {user?.username}
           </h2>
