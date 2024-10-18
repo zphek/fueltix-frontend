@@ -1,5 +1,6 @@
 "use client"
 
+import AssignmentTicket from "@/components/AssignmentTicket";
 import Denomination from "@/components/Denomination";
 import Dropdown from "@/components/Dropdown";
 import TicketCard from "@/components/TicketCard";
@@ -33,6 +34,7 @@ export default function Assigment() {
   const [expirationDate, setExpirationDate] = useState("");
   const [sequential, setSequential] = useState("");
   const [error, setError] = useState("");
+  const [drivers, setDrivers] = useState();
   const [creation, setCreation] = useState<RequestResponse | null>(null);
 
   useEffect(()=>{
@@ -88,7 +90,7 @@ export default function Assigment() {
   }, [creation]);
 
   return (
-    <main className="p-10 px-20 min-h-screen w-screen">
+    <main className="p-10 px-20 min-h-screen max-h-screen overflow-y-scroll w-screen">
       <h1 className="text-5xl font-normal text-[#070085] h-16">Asignar Ticket</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
       {creation && (
@@ -96,45 +98,60 @@ export default function Assigment() {
           {creation.message}
         </p>
       )}
-      <form onSubmit={handleSubmit} className="flex flex-grow w-full justify-start mt-5">
-        <div className="grow flex flex-col gap-y-6 max-w-[600px]">
-          <div className="flex flex-col">
-            <h2 className="text-[#00075D] text-xl font-bold">A&ntilde;o Asignamiento</h2>
-            <input 
-              type="number" 
-              value={expirationDate}
-              onChange={(e) => setExpirationDate(e.target.value)}
-              className="w-full outline-none rounded-full py-2 px-4 border-2 border-[#00075D]"
-            />
+      <form onSubmit={handleSubmit} className="flex flex-col flex-grow w-full justify-start mt-5">
+        <div className="flex w-full">
+          <div className="grow flex flex-col gap-y-6 max-w-[600px]">
+            <div className="flex flex-col">
+              <h2 className="text-[#00075D] text-xl font-bold">A&ntilde;o Asignamiento</h2>
+              <input 
+                type="number" 
+                value={expirationDate}
+                onChange={(e) => setExpirationDate(e.target.value)}
+                className="w-full outline-none rounded-full py-2 px-4 border-2 border-[#00075D]"
+              />
+            </div>
+            
+            <Dropdown options={[1,2,3,4,5,6,7,8,9,10,11,12]} title="Mes" setCurrent={setDenomination} />
           </div>
-          
-          <Dropdown options={[1,2,3,4,5,6,7,8,9,10,11,12]} title="Mes" setCurrent={setDenomination} />
-          <div className="text-white w-full flex justify-center gap-x-5">
-            <button type="submit" className="py-2 px-6 rounded-full bg-[#00075D]">
-              Guardar
-            </button>
-            <button type="button" onClick={() => {
-              setDenomination("");
-              setExpirationDate("");
-              setSequential("");
-              setError("");
-              setTickets(()=>[])
-            }} className="py-2 px-6 rounded-full bg-[#00075D]">
-              Cancelar
-            </button>
-          </div>
-        </div>
-        <div className="px-20 flex flex-col items-center">
-          <Denomination/>
+          <div className="px-20 flex flex-col items-center">
+            <Denomination/>
 
-          <button 
-            className="py-2 px-6 rounded-full bg-[#00075D] text-white mt-10"
-            onClick={registerTickets}
-            disabled={tickets.length === 0}
-          >
-            Concluir Proceso
-          </button>
+            <button 
+              className="py-2 px-6 rounded-full bg-[#00075D] text-white mt-10"
+              onClick={registerTickets}
+              disabled={tickets.length === 0}
+            >
+              Concluir Proceso
+            </button>
+          </div>
         </div>
+
+        <div className="flex flex-col max-h-[400px] gap-y-5 overflow-y-scroll py-5 px-5 mt-5 w-full">
+        {registeredTickets.map((ticket, index) => (
+          <AssignmentTicket 
+            key={index} 
+            ticket={ticket}
+            svg={ticket.barcode_svg}
+            id={index}
+            setItems={setTickets} 
+          />
+        ))}
+        </div>
+
+        <div className="text-white w-full flex justify-center gap-x-5 mt-5">
+              <button type="submit" className="py-2 px-6 rounded-full bg-[#00075D]">
+                Guardar
+              </button>
+              <button type="button" onClick={() => {
+                setDenomination("");
+                setExpirationDate("");
+                setSequential("");
+                setError("");
+                setTickets(()=>[])
+              }} className="py-2 px-6 rounded-full bg-[#00075D]">
+                Cancelar
+              </button>
+            </div>
       </form>
       <h1 className="text-3xl font-bold text-[#070085] h-16 mt-10">Actualizaciones</h1>
       <div className="flex flex-col max-h-[270px] min-w-full overflow-y-scroll gap-y-5">
