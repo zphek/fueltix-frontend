@@ -3,20 +3,24 @@
 import Dropdown from "@/components/Dropdown";
 import TicketCard from "@/components/TicketCard";
 import sendRequest from "@/utilities/sendRequest";
-import { useState, FormEvent, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 type Ticket = {
   amount: string;
   sequential: string;
   expirationDate: string;
+  barcode: number;
+  status: "in-memory" | "editing" | "registered";
 };
 
 type RegisteredTicket = {
+  fuelTicketId: number;
   amount: string;
   sequential: string;
   expirationDate: string;
-  barcode: string;
+  barcode: number;
   barcode_svg: string;
+  status: "in-memory" | "editing" | "registered";
 };
 
 type RequestResponse = {
@@ -27,7 +31,7 @@ type RequestResponse = {
 
 export default function Register() {
   // Form state
-  const [denomination, setDenomination] = useState("");
+  const [denomination, setDenomination] = useState("200");
   const [registrationDate, setRegistrationDate] = useState("");
   const [sequential, setSequential] = useState("");
   const [barcode, setBarcode] = useState("");
@@ -41,16 +45,19 @@ export default function Register() {
 
   const [creation, setCreation] = useState<RequestResponse | null>(null);
 
+  const [ticketBeingEdited, setTicketBeingEdited] =
+    useState<RegisteredTicket | null>();
+
   useEffect(() => {
     sendRequest("/tickets", "GET", null).then(({ data }) => {
-      setRegisteredTickets((tickets) => [...tickets, ...data]);
-      console.log(data);
+      setRegisteredTickets([...data]);
     });
   }, []);
 
   const registerTickets = async () => {
     try {
-      await sendRequest("/tickets", "POST", tickets);
+      const response = await sendRequest("/tickets", "POST", tickets);
+      setRegisteredTickets((prevTickets) => [...response.data, ...prevTickets]);
       setCreation({
         error: false,
         success: true,
@@ -66,9 +73,46 @@ export default function Register() {
     }
   };
 
-  const insertTicket = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!denomination || !registrationDate || !sequential) {
+  const updateTicket = async () => {
+    if (!ticketBeingEdited) return;
+    try {
+      const response = await sendRequest(
+        `tickets/${ticketBeingEdited.fuelTicketId}`,
+        "PATCH",
+        {
+          amount: denomination,
+          sequential: sequential,
+          expirationDate: registrationDate,
+          barcode: Number(barcode),
+        }
+      );
+      setRegisteredTickets((prevTickets) =>
+        prevTickets.map((ticket) =>
+          ticket.fuelTicketId === ticketBeingEdited.fuelTicketId
+            ? response.data
+            : ticket
+        )
+      );
+      setCreation({
+        error: false,
+        success: true,
+        message: "El ticket fue actualizado correctamente!",
+      });
+      setTickets([]); // Clear tickets after successful registration
+      setTicketBeingEdited(null);
+      clearForm();
+    } catch (err) {
+      setCreation({
+        error: true,
+        success: false,
+        message: "Hubo un error a la hora de actualizar el ticket.",
+      });
+    }
+  };
+
+  const insertTicket = () => {
+    // e.preventDefault();
+    if (!denomination || !registrationDate || !sequential || !barcode) {
       setError("Faltan campos por llenar.");
       return;
     }
@@ -76,6 +120,8 @@ export default function Register() {
       amount: denomination,
       sequential: sequential,
       expirationDate: registrationDate,
+      barcode: Number(barcode),
+      status: "in-memory",
     };
     setTickets([...tickets, newTicket]);
     clearForm();
@@ -88,13 +134,30 @@ export default function Register() {
     }
   }, [creation]);
 
+  const handleEditing = (ticket: RegisteredTicket) => {
+    setDenomination(ticket.amount);
+    setRegistrationDate(ticket.expirationDate);
+    setSequential(ticket.sequential);
+    setBarcode(ticket.barcode.toString());
+    setTicketBeingEdited(ticket);
+  };
+
   const inMemoryTickets = tickets.map((ticket, index) => {
     return (
       <TicketCard
+        barcode_svg=""
+        onEdit={() => {}}
+        onDelete={() => {
+          setTickets((prevTickets) =>
+            prevTickets.filter((_, i) => i !== index)
+          );
+        }}
+        initialStatus={ticket.status}
         key={index}
-        ticket={ticket}
-        id={index}
-        setItems={setTickets}
+        date={ticket.expirationDate}
+        denomination={ticket.amount}
+        sequential={ticket.sequential}
+        barcode={ticket.barcode}
       />
     );
   });
@@ -102,11 +165,27 @@ export default function Register() {
   const registeredTicketsCards = registeredTickets.map((ticket, index) => {
     return (
       <TicketCard
+        barcode_svg={ticket.barcode_svg}
+        onEdit={() => {
+          handleEditing(ticket);
+        }}
+        onDelete={async () => {
+          await sendRequest(`/tickets/${ticket.fuelTicketId}`, "DELETE", {});
+          setRegisteredTickets((prevTickets) =>
+            prevTickets.filter((_, i) => i !== index)
+          );
+        }}
+        initialStatus={
+          ticketBeingEdited?.fuelTicketId === ticket.fuelTicketId
+            ? "editing"
+            : ticket.status
+        }
         key={index}
-        ticket={ticket}
-        svg={ticket.barcode_svg}
-        id={index}
-        setItems={setTickets}
+        // svg={ticket.barcode_svg}
+        date={ticket.expirationDate}
+        denomination={ticket.amount}
+        sequential={ticket.sequential}
+        barcode={ticket.barcode}
       />
     );
   });
@@ -116,6 +195,7 @@ export default function Register() {
     setRegistrationDate("");
     setSequential("");
     setError("");
+    setBarcode("");
   };
   return (
     <main className="p-10 px-20 min-h-screen w-screen">
@@ -132,11 +212,12 @@ export default function Register() {
         </p>
       )}
       <form
-        className="flex flex-grow w-full justify-start mt-5"
-        onSubmit={insertTicket}
+        className="flex flex-grow w-full justify-between mt-5"
+        onSubmit={(e) => e.preventDefault()}
       >
         <div className="grow flex flex-col gap-y-6 max-w-[600px]">
           <Dropdown
+            value={denomination}
             options={[200, 500, 1000, 2000]}
             title="Denominación"
             setCurrent={setDenomination}
@@ -162,12 +243,19 @@ export default function Register() {
             value={barcode}
             changeCb={(e) => setBarcode(e.target.value)}
           />
-          <div className="text-white w-full flex justify-center gap-x-5">
+          <div className="text-white w-full font-bold flex justify-center gap-x-5">
             <button
+              onClick={() => {
+                if (ticketBeingEdited) {
+                  updateTicket();
+                } else {
+                  insertTicket();
+                }
+              }}
               type="submit"
-              className="py-2 px-6 rounded-full bg-[#00075D]"
+              className="py-2 px-12 rounded-full bg-[#00075D]"
             >
-              Guardar
+              {ticketBeingEdited ? "Actualizar" : "Guardar"}
             </button>
 
             <button
@@ -175,8 +263,9 @@ export default function Register() {
               onClick={() => {
                 clearForm();
                 setTickets(() => []);
+                setTicketBeingEdited(null);
               }}
-              className="py-2 px-6 rounded-full bg-[#00075D]"
+              className="py-2  px-12 rounded-full bg-[rgb(0,7,93)]"
             >
               Cancelar
             </button>
@@ -196,9 +285,30 @@ export default function Register() {
           </button>
         </div>
       </form>
-
-      <h1 className="title !text-3xl mt-10">Actualizaciones</h1>
+      <div className="flex justify-between max-w-screen-xl">
+        <h1 className="title !text-3xl mt-7">Actualizaciones</h1>
+        <div className="flex gap-x-5 mt-5">
+          <div className="flex items-center gap-x-2">
+            <div className="w-4 h-4 bg-[#468d40] rounded-full"></div>
+            <p>En Proceso</p>
+          </div>
+          <div className="flex items-center gap-x-2">
+            <div className="w-4 h-4 bg-[#ff6600] rounded-full"></div>
+            <p>En Edición</p>
+          </div>
+          <div className="flex items-center gap-x-2">
+            <div className="w-4 h-4 bg-[#00075D] rounded-full"></div>
+            <p>Registrado</p>
+          </div>
+        </div>
+      </div>
       <div className="flex flex-col max-h-[300px] min-w-full overflow-y-scroll gap-y-5">
+        {inMemoryTickets.length === 0 &&
+          registeredTicketsCards.length === 0 && (
+            <p className="text-[#00075D] text-lg ">
+              No hay tickets disponibles.
+            </p>
+          )}
         {inMemoryTickets}
         {registeredTicketsCards}
       </div>
