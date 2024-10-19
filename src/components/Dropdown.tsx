@@ -28,6 +28,7 @@ export default function Dropdown({ title, setCurrent, options }) {
           {options && options.map((option, index) => (
             <li 
               key={index}
+              
               className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
               onClick={() => handleSelect(option)}
             >

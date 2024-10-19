@@ -1,46 +1,52 @@
-"use client"
+"use client";
 
 import Dropdown from "@/components/Dropdown";
 import TicketCard from "@/components/TicketCard";
 import sendRequest from "@/utilities/sendRequest";
 import { useState, FormEvent, useEffect } from "react";
 
-type TicketForm = {
+type Ticket = {
   amount: string;
   sequential: string;
   expirationDate: string;
-}
+};
 
-type RegisteredTicketForm = {
-    amount: string;
-    sequential: string;
-    expirationDate: string;
-    barcode: string;
-    barcode_svg: string;
-  }
+type RegisteredTicket = {
+  amount: string;
+  sequential: string;
+  expirationDate: string;
+  barcode: string;
+  barcode_svg: string;
+};
 
 type RequestResponse = {
   error: boolean;
   success: boolean;
   message: string;
-}
+};
 
 export default function Register() {
-  const [tickets, setTickets] = useState<TicketForm[]>([]);
-  const [registeredTickets, setRegisteredTickets] = useState<RegisteredTicketForm[]>([]);
+  // Form state
   const [denomination, setDenomination] = useState("");
-  const [expirationDate, setExpirationDate] = useState("");
+  const [registrationDate, setRegistrationDate] = useState("");
   const [sequential, setSequential] = useState("");
+  const [barcode, setBarcode] = useState("");
   const [error, setError] = useState("");
+  // State for in-memory tickets
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  // State for in-database tickets
+  const [registeredTickets, setRegisteredTickets] = useState<
+    RegisteredTicket[]
+  >([]);
+
   const [creation, setCreation] = useState<RequestResponse | null>(null);
 
-  useEffect(()=>{
-    sendRequest("/tickets", "GET", null)
-    .then(({data})=>{
-        setRegisteredTickets((tickets)=> [...tickets, ...data])
-        console.log(data)
-    })
-  }, [])
+  useEffect(() => {
+    sendRequest("/tickets", "GET", null).then(({ data }) => {
+      setRegisteredTickets((tickets) => [...tickets, ...data]);
+      console.log(data);
+    });
+  }, []);
 
   const registerTickets = async () => {
     try {
@@ -48,35 +54,31 @@ export default function Register() {
       setCreation({
         error: false,
         success: true,
-        message: "Los tickets fueron agregados correctamente!"
+        message: "Los tickets fueron agregados correctamente!",
       });
       setTickets([]); // Clear tickets after successful registration
     } catch (err) {
       setCreation({
         error: true,
         success: false,
-        message: "Hubo un error a la hora de insertar los tickets."
+        message: "Hubo un error a la hora de insertar los tickets.",
       });
     }
-  }
+  };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const insertTicket = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!denomination || !expirationDate || !sequential) {
+    if (!denomination || !registrationDate || !sequential) {
       setError("Faltan campos por llenar.");
       return;
     }
-    const newTicket: TicketForm = {
+    const newTicket: Ticket = {
       amount: denomination,
       sequential: sequential,
-      expirationDate: expirationDate
+      expirationDate: registrationDate,
     };
     setTickets([...tickets, newTicket]);
-    setError("");
-    // Reset form fields
-    setDenomination("");
-    setExpirationDate("");
-    setSequential("");
+    clearForm();
   };
 
   useEffect(() => {
@@ -86,47 +88,96 @@ export default function Register() {
     }
   }, [creation]);
 
+  const inMemoryTickets = tickets.map((ticket, index) => {
+    return (
+      <TicketCard
+        key={index}
+        ticket={ticket}
+        id={index}
+        setItems={setTickets}
+      />
+    );
+  });
+
+  const registeredTicketsCards = registeredTickets.map((ticket, index) => {
+    return (
+      <TicketCard
+        key={index}
+        ticket={ticket}
+        svg={ticket.barcode_svg}
+        id={index}
+        setItems={setTickets}
+      />
+    );
+  });
+
+  const clearForm = () => {
+    setDenomination("");
+    setRegistrationDate("");
+    setSequential("");
+    setError("");
+  };
   return (
     <main className="p-10 px-20 min-h-screen w-screen">
-      <h1 className="text-5xl font-normal text-[#070085] h-16">Registrar Ticket</h1>
+      <h1 className="title">Registrar Ticket</h1>
+
       {error && <p className="text-red-500 mb-4">{error}</p>}
       {creation && (
-        <p className={`mb-4 ${creation.error ? 'text-red-500' : 'text-green-500'}`}>
+        <p
+          className={`mb-4 ${
+            creation.error ? "text-red-500" : "text-green-500"
+          }`}
+        >
           {creation.message}
         </p>
       )}
-      <form onSubmit={handleSubmit} className="flex flex-grow w-full justify-start mt-5">
+      <form
+        className="flex flex-grow w-full justify-start mt-5"
+        onSubmit={insertTicket}
+      >
         <div className="grow flex flex-col gap-y-6 max-w-[600px]">
-          <Dropdown options={[200, 500, 1000, 2000]} title="Denominación" setCurrent={setDenomination} />
-          <div className="flex flex-col">
-            <h2 className="text-[#00075D] text-xl font-bold">Fecha de registro</h2>
-            <input 
-              type="date" 
-              value={expirationDate}
-              onChange={(e) => setExpirationDate(e.target.value)}
-              className="w-full outline-none rounded-full py-2 px-4 border-2 border-[#00075D]"
-            />
-          </div>
-          <div className="flex flex-col">
-            <h2 className="text-[#00075D] text-xl font-bold">Ticket secuencial</h2>
-            <input 
-              type="text" 
-              value={sequential}
-              onChange={(e) => setSequential(e.target.value)}
-              className="w-full outline-none rounded-full py-2 px-4 border-2 border-[#00075D]"
-            />
-          </div>
+          <Dropdown
+            options={[200, 500, 1000, 2000]}
+            title="Denominación"
+            setCurrent={setDenomination}
+          />
+
+          <TextField
+            type="date"
+            label="Fecha de registro"
+            value={registrationDate}
+            changeCb={(e) => setRegistrationDate(e.target.value)}
+          />
+
+          <TextField
+            type="number"
+            label="Ticket secuencial"
+            value={sequential}
+            changeCb={(e) => setSequential(e.target.value)}
+          />
+
+          <TextField
+            type="number"
+            label="Código de barra"
+            value={barcode}
+            changeCb={(e) => setBarcode(e.target.value)}
+          />
           <div className="text-white w-full flex justify-center gap-x-5">
-            <button type="submit" className="py-2 px-6 rounded-full bg-[#00075D]">
+            <button
+              type="submit"
+              className="py-2 px-6 rounded-full bg-[#00075D]"
+            >
               Guardar
             </button>
-            <button type="button" onClick={() => {
-              setDenomination("");
-              setExpirationDate("");
-              setSequential("");
-              setError("");
-              setTickets(()=>[])
-            }} className="py-2 px-6 rounded-full bg-[#00075D]">
+
+            <button
+              type="button"
+              onClick={() => {
+                clearForm();
+                setTickets(() => []);
+              }}
+              className="py-2 px-6 rounded-full bg-[#00075D]"
+            >
               Cancelar
             </button>
           </div>
@@ -136,7 +187,7 @@ export default function Register() {
             {tickets.length}
           </h3>
           <h2 className="text-xl text-[#00075D] font-semibold">Tickets</h2>
-          <button 
+          <button
             className="py-2 px-6 rounded-full bg-[#00075D] text-white mt-10"
             onClick={registerTickets}
             disabled={tickets.length === 0}
@@ -145,27 +196,35 @@ export default function Register() {
           </button>
         </div>
       </form>
-      <h1 className="text-3xl font-bold text-[#070085] h-16 mt-10">Actualizaciones</h1>
-      <div className="flex flex-col max-h-[270px] min-w-full overflow-y-scroll gap-y-5">
-        {tickets.map((ticket, index) => (
-          <TicketCard 
-            key={index} 
-            ticket={ticket}
-            id={index}
-            setItems={setTickets} 
-          />
-        ))}
 
-        {registeredTickets.map((ticket, index) => (
-          <TicketCard 
-            key={index} 
-            ticket={ticket}
-            svg={ticket.barcode_svg}
-            id={index}
-            setItems={setTickets} 
-          />
-        ))}
+      <h1 className="title !text-3xl mt-10">Actualizaciones</h1>
+      <div className="flex flex-col max-h-[300px] min-w-full overflow-y-scroll gap-y-5">
+        {inMemoryTickets}
+        {registeredTicketsCards}
       </div>
     </main>
-  )
+  );
 }
+
+interface InputProps {
+  label: string;
+  value: string;
+  type?: string;
+  changeCb: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+const TextField = ({ value, changeCb, type = "text", label }: InputProps) => {
+  return (
+    <div className="flex flex-col">
+      <label htmlFor={label} className="text-[#00075D] text-xl font-bold">
+        {label}
+      </label>
+      <input
+        id={label}
+        type={type}
+        onChange={changeCb}
+        value={value}
+        className="w-full mt-2 outline-none rounded-full py-2 px-4 border-2 border-[#00075D]"
+      />
+    </div>
+  );
+};
