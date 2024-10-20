@@ -56,7 +56,12 @@ export default function Register() {
 
   const registerTickets = async () => {
     try {
-      const response = await sendRequest("/tickets", "POST", tickets);
+      // convert ticket amounts to strings
+      const ticketsToRegister = tickets.map((ticket) => ({
+        ...ticket,
+        amount: ticket.amount.toString(),
+      }));
+      const response = await sendRequest("/tickets", "POST", ticketsToRegister);
       setRegisteredTickets((prevTickets) => [...response.data, ...prevTickets]);
       setCreation({
         error: false,
