@@ -81,6 +81,13 @@ export default function Assigment() {
 
   const handleSave = async () => {};
 
+  const [totalAmount, setTotalAmount] = useState(0);
+
+  const onDenominationChange = (e, value) => {
+    const inputValue = parseInt(e.target.value) || 0;
+    setTotalAmount((prevTotal) => prevTotal + inputValue * value);
+  };
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!denomination || !expirationDate || !sequential) {
@@ -148,7 +155,10 @@ export default function Assigment() {
             />
           </div>
           <div className="px-20 flex flex-col items-center">
-            <Denomination />
+            <Denomination
+              title="Denomination"
+              onChange={onDenominationChange}
+            />
 
             <button
               className="py-2 px-6 rounded-full bg-[#00075D] text-white mt-10"
